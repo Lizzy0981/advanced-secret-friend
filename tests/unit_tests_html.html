@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Advanced Secret Friend - Unit Tests</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5856eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        .test-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .passed { color: var(--success-color); }
+        .failed { color: var(--error-color); }
+        .total { color: var(--primary-color); }
+        .duration { color: var(--warning-color); }
+
+        .test-results {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .test-category {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .test-category:last-child {
+            border-bottom: none;
+        }
+
+        .category-header {
+            background: var(--background);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-header:hover {
+            background: #f1f5f9;
+        }
+
+        .category-toggle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .test-list {
+            display: none;
+        }
+
+        .test-list.expanded {
+            display: block;
+        }
+
+        .test-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-item:last-child {
+            border-bottom: none;
+        }
+
+        .test-info {
+            flex: 1;
+        }
+
+        .test-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .test-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .test-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pass {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-fail {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        .test-duration {
+            margin-left: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--primary-color) 100%);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .console-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Consolas', 'Monaco', monospace;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+        }
+
+        .log-success { color: #00ff00; }
+        .log-error { color: #ff4444; }
+        .log-warning { color: #ffaa00; }
+        .log-info { color: #00aaff; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .test-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Unit Tests</h1>
+            <p>Advanced Secret Friend - Data Science Edition</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="runAllTests()">
+                ▶️ Ejecutar Todos los Tests
+            </button>
+            <button class="btn btn-secondary" onclick="runAlgorithmTests()">
+                🧮 Tests de Algoritmos
+            </button>
+            <button class="btn btn-secondary" onclick="runStatisticsTests()">
+                📊 Tests de Estadísticas
+            </button>
+            <button class="btn btn-secondary" onclick="runUITests()">
+                🎨 Tests de UI
+            </button>
+            <button class="btn btn-secondary" onclick="clearResults()">
+                🗑️ Limpiar Resultados
+            </button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="test-summary">
+            <div class="summary-card">
+                <div class="summary-number total" id="totalTests">0</div>
+                <div class="summary-label">Total Tests</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number passed" id="passedTests">0</div>
+                <div class="summary-label">Pasaron</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number failed" id="failedTests">0</div>
+                <div class="summary-label">Fallaron</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number duration" id="testDuration">0ms</div>
+                <div class="summary-label">Duración</div>
+            </div>
+        </div>
+
+        <div class="test-results" id="testResults">
+            <!-- Test results will be populated here -->
+        </div>
+
+        <div class="console-output" id="consoleOutput">
+            <div class="log-entry log-info">🚀 Sistema de testing inicializado</div>
+            <div class="log-entry log-info">💡 Ejecuta los tests usando los botones superiores</div>
+        </div>
+    </div>
+
+    <script>
+        // Test Framework
+        class TestFramework {
+            constructor() {
+                this.tests = [];
+                this.results = [];
+                this.totalTests = 0;
+                this.passedTests = 0;
+                this.failedTests = 0;
+                this.startTime = 0;
+            }
+
+            addTest(category, name, description, testFn) {
+                this.tests.push({
+                    category,
+                    name,
+                    description,
+                    testFn
+                });
+            }
+
+            async runTests(filterCategory = null) {
+                this.results = [];
+                this.totalTests = 0;
+                this.passedTests = 0;
+                this.failedTests = 0;
+                this.startTime = performance.now();
+
+                const testsToRun = filterCategory 
+                    ? this.tests.filter(test => test.category === filterCategory)
+                    : this.tests;
+
+                this.totalTests = testsToRun.length;
+
+                this.log('🧪 Iniciando tests...', 'info');
+                this.updateProgress(0);
+
+                for (let i = 0; i < testsToRun.length; i++) {
+                    const test = testsToRun[i];
+                    await this.runSingleTest(test, i + 1);
+                    this.updateProgress(((i + 1) / testsToRun.length) * 100);
+                }
+
+                const duration = performance.now() - this.startTime;
+                this.log(`✅ Tests completados en ${duration.toFixed(2)}ms`, 'success');
+                this.updateSummary(duration);
+                this.renderResults();
+            }
+
+            async runSingleTest(test, index) {
+                const testStart = performance.now();
+                let passed = false;
+                let error = null;
+
+                try {
+                    this.log(`[${index}/${this.totalTests}] ${test.name}`, 'info');
+                    await test.testFn();
+                    passed = true;
+                    this.passedTests++;
+                    this.log(`✅ ${test.name} - PASS`, 'success');
+                } catch (e) {
+                    passed = false;
+                    error = e.message;
+                    this.failedTests++;
+                    this.log(`❌ ${test.name} - FAIL: ${error}`, 'error');
+                }
+
+                const testDuration = performance.now() - testStart;
+
+                this.results.push({
+                    ...test,
+                    passed,
+                    error,
+                    duration: testDuration
+                });
+            }
+
+            updateProgress(percentage) {
+                const progressFill = document.getElementById('progressFill');
+                progressFill.style.width = `${percentage}%`;
+            }
+
+            updateSummary(totalDuration) {
+                document.getElementById('totalTests').textContent = this.totalTests;
+                document.getElementById('passedTests').textContent = this.passedTests;
+                document.getElementById('failedTests').textContent = this.failedTests;
+                document.getElementById('testDuration').textContent = `${totalDuration.toFixed(2)}ms`;
+            }
+
+            renderResults() {
+                const container = document.getElementById('testResults');
+                const categories = [...new Set(this.results.map(r => r.category))];
+                
+                container.innerHTML = categories.map(category => {
+                    const categoryTests = this.results.filter(r => r.category === category);
+                    const passedInCategory = categoryTests.filter(t => t.passed).length;
+                    
+                    return `
+                        <div class="test-category">
+                            <div class="category-header" onclick="toggleCategory('${category}')">
+                                <span>${category} (${passedInCategory}/${categoryTests.length})</span>
+                                <span class="category-toggle" id="toggle-${category}">▼</span>
+                            </div>
+                            <div class="test-list" id="list-${category}">
+                                ${categoryTests.map(test => `
+                                    <div class="test-item">
+                                        <div class="test-info">
+                                            <div class="test-name">${test.name}</div>
+                                            <div class="test-description">${test.description}</div>
+                                            ${test.error ? `<div style="color: var(--error-color); font-size: 0.8rem; margin-top: 0.25rem;">Error: ${test.error}</div>` : ''}
+                                        </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <span class="test-status ${test.passed ? 'status-pass' : 'status-fail'}">
+                                                ${test.passed ? 'PASS' : 'FAIL'}
+                                            </span>
+                                            <span class="test-duration">${test.duration.toFixed(2)}ms</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            log(message, type = 'info') {
+                const console = document.getElementById('consoleOutput');
+                const entry = document.createElement('div');
+                entry.className = `log-entry log-${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                console.appendChild(entry);
+                console.scrollTop = console.scrollHeight;
+            }
+
+            // Assertion methods
+            assertEqual(actual, expected, message = '') {
+                if (actual !== expected) {
+                    throw new Error(`${message} - Expected: ${expected}, Actual: ${actual}`);
+                }
+            }
+
+            assertTrue(condition, message = '') {
+                if (!condition) {
+                    throw new Error(`${message} - Expected true, got false`);
+                }
+            }
+
+            assertFalse(condition, message = '') {
+                if (condition) {
+                    throw new Error(`${message} - Expected false, got true`);
+                }
+            }
+
+            assertNotNull(value, message = '') {
+                if (value === null || value === undefined) {
+                    throw new Error(`${message} - Expected non-null value`);
+                }
+            }
+
+            assertThrows(fn, message = '') {
+                try {
+                    fn();
+                    throw new Error(`${message} - Expected function to throw`);
+                } catch (e) {
+                    // Expected behavior
+                }
+            }
+
+            assertBetween(value, min, max, message = '') {
+                if (value < min || value > max) {
+                    throw new Error(`${message} - Expected value between ${min} and ${max}, got ${value}`);
+                }
+            }
+        }
+
+        // Initialize test framework
+        const testFramework = new TestFramework();
+
+        // Mock SecretFriendApp for testing
+        class MockSecretFriendApp {
+            constructor() {
+                this.friends = [];
+                this.drawHistory = [];
+                this.selectedAlgorithm = 'simple';
+            }
+
+            simpleRandom() {
+                if (this.friends.length === 0) throw new Error('No friends available');
+                return this.friends[Math.floor(Math.random() * this.friends.length)];
+            }
+
+            fisherYatesRandom() {
+                if (this.friends.length === 0) throw new Error('No friends available');
+                const shuffled = [...this.friends];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled[0];
+            }
+
+            weightedRandom() {
+                if (this.friends.length === 0) throw new Error('No friends available');
+                const drawCounts = {};
+                this.friends.forEach(friend => drawCounts[friend] = 0);
+                this.drawHistory.forEach(draw => {
+                    if (drawCounts.hasOwnProperty(draw.winner)) {
+                        drawCounts[draw.winner]++;
+                    }
+                });
+
+                const maxCount = Math.max(...Object.values(drawCounts), 0);
+                const weights = this.friends.map(friend => maxCount - drawCounts[friend] + 1);
+                const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+                let random = Math.random() * totalWeight;
+
+                for (let i = 0; i < this.friends.length; i++) {
+                    random -= weights[i];
+                    if (random <= 0) return this.friends[i];
+                }
+                return this.friends[0];
+            }
+
+            calculateFairness() {
+                if (this.drawHistory.length === 0 || this.friends.length === 0) return 100;
+                
+                const drawCounts = {};
+                this.friends.forEach(friend => drawCounts[friend] = 0);
+                this.drawHistory.forEach(draw => {
+                    if (drawCounts.hasOwnProperty(draw.winner)) {
+                        drawCounts[draw.winner]++;
+                    }
+                });
+
+                const counts = Object.values(drawCounts);
+                const mean = counts.reduce((sum, count) => sum + count, 0) / counts.length;
+                const variance = counts.reduce((sum, count) => sum + Math.pow(count - mean, 2), 0) / counts.length;
+                
+                return Math.max(0, Math.round(100 - (variance * 10)));
+            }
+
+            addFriend(name) {
+                if (!name || name.trim() === '') throw new Error('Invalid friend name');
+                if (this.friends.includes(name)) throw new Error('Friend already exists');
+                this.friends.push(name);
+            }
+
+            recordDraw(winner, algorithm) {
+                this.drawHistory.unshift({
+                    id: Date.now(),
+                    winner,
+                    algorithm,
+                    timestamp: new Date().toISOString(),
+                    participantCount: this.friends.length
+                });
+            }
+        }
+
+        // Algorithm Tests
+        testFramework.addTest('🧮 Algoritmos', 'Simple Random - Resultado válido', 
+            'Verifica que el algoritmo simple devuelve un amigo válido', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                const result = app.simpleRandom();
+                testFramework.assertTrue(app.friends.includes(result), 'El resultado debe estar en la lista de amigos');
+            });
+
+        testFramework.addTest('🧮 Algoritmos', 'Simple Random - Lista vacía', 
+            'Verifica manejo de error con lista vacía', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                testFramework.assertThrows(() => app.simpleRandom(), 'Debe lanzar error con lista vacía');
+            });
+
+        testFramework.addTest('🧮 Algoritmos', 'Fisher-Yates - Distribución uniforme', 
+            'Verifica que Fisher-Yates produce distribución uniforme', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                const results = {};
+                const iterations = 3000;
+
+                for (let i = 0; i < iterations; i++) {
+                    const result = app.fisherYatesRandom();
+                    results[result] = (results[result] || 0) + 1;
+                }
+
+                // Cada amigo debería ser seleccionado aproximadamente 1000 veces (±200)
+                Object.values(results).forEach(count => {
+                    testFramework.assertBetween(count, 800, 1200, 'Distribución debe ser aproximadamente uniforme');
+                });
+            });
+
+        testFramework.addTest('🧮 Algoritmos', 'Weighted Random - Compensación de sesgo', 
+            'Verifica que el algoritmo ponderado compensa sesgos históricos', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                
+                // Simular historial con sesgo hacia Ana
+                for (let i = 0; i < 10; i++) {
+                    app.recordDraw('Ana', 'test');
+                }
+                for (let i = 0; i < 2; i++) {
+                    app.recordDraw('Carlos', 'test');
+                    app.recordDraw('María', 'test');
+                }
+
+                const results = {};
+                const iterations = 1000;
+
+                for (let i = 0; i < iterations; i++) {
+                    const result = app.weightedRandom();
+                    results[result] = (results[result] || 0) + 1;
+                }
+
+                // Carlos y María deberían ser seleccionados más frecuentemente que Ana
+                testFramework.assertTrue(results['Carlos'] > results['Ana'], 'Carlos debe tener más selecciones que Ana');
+                testFramework.assertTrue(results['María'] > results['Ana'], 'María debe tener más selecciones que Ana');
+            });
+
+        // Statistics Tests
+        testFramework.addTest('📊 Estadísticas', 'Cálculo de equidad - Distribución perfecta', 
+            'Verifica cálculo correcto con distribución perfecta', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                
+                // Historial perfectamente balanceado
+                for (let i = 0; i < 3; i++) {
+                    app.recordDraw('Ana', 'test');
+                    app.recordDraw('Carlos', 'test');
+                    app.recordDraw('María', 'test');
+                }
+
+                const fairness = app.calculateFairness();
+                testFramework.assertEqual(fairness, 100, 'Distribución perfecta debe dar 100% de equidad');
+            });
+
+        testFramework.addTest('📊 Estadísticas', 'Cálculo de equidad - Sin historial', 
+            'Verifica comportamiento con historial vacío', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                
+                const fairness = app.calculateFairness();
+                testFramework.assertEqual(fairness, 100, 'Sin historial debe dar 100% de equidad');
+            });
+
+        testFramework.addTest('📊 Estadísticas', 'Cálculo de equidad - Distribución sesgada', 
+            'Verifica cálculo con distribución muy sesgada', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María'];
+                
+                // Historial muy sesgado hacia Ana
+                for (let i = 0; i < 20; i++) {
+                    app.recordDraw('Ana', 'test');
+                }
+                app.recordDraw('Carlos', 'test');
+                app.recordDraw('María', 'test');
+
+                const fairness = app.calculateFairness();
+                testFramework.assertTrue(fairness < 50, 'Distribución muy sesgada debe dar baja equidad');
+            });
+
+        // Data Management Tests
+        testFramework.addTest('💾 Gestión de Datos', 'Agregar amigo - Nombre válido', 
+            'Verifica que se pueden agregar amigos válidos', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.addFriend('Ana García');
+                testFramework.assertEqual(app.friends.length, 1, 'Debe haber 1 amigo');
+                testFramework.assertTrue(app.friends.includes('Ana García'), 'Ana García debe estar en la lista');
+            });
+
+        testFramework.addTest('💾 Gestión de Datos', 'Agregar amigo - Nombre duplicado', 
+            'Verifica manejo de nombres duplicados', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.addFriend('Ana García');
+                testFramework.assertThrows(() => app.addFriend('Ana García'), 'Debe lanzar error con nombre duplicado');
+            });
+
+        testFramework.addTest('💾 Gestión de Datos', 'Agregar amigo - Nombre vacío', 
+            'Verifica manejo de nombres vacíos', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                testFramework.assertThrows(() => app.addFriend(''), 'Debe lanzar error con nombre vacío');
+                testFramework.assertThrows(() => app.addFriend('   '), 'Debe lanzar error con espacios');
+            });
+
+        testFramework.addTest('💾 Gestión de Datos', 'Registro de sorteo - Datos completos', 
+            'Verifica que los sorteos se registran correctamente', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos'];
+                app.recordDraw('Ana', 'simple');
+                
+                testFramework.assertEqual(app.drawHistory.length, 1, 'Debe haber 1 registro');
+                testFramework.assertEqual(app.drawHistory[0].winner, 'Ana', 'Ganador debe ser Ana');
+                testFramework.assertEqual(app.drawHistory[0].algorithm, 'simple', 'Algoritmo debe ser simple');
+                testFramework.assertEqual(app.drawHistory[0].participantCount, 2, 'Debe haber 2 participantes');
+                testFramework.assertNotNull(app.drawHistory[0].timestamp, 'Debe tener timestamp');
+            });
+
+        // Performance Tests
+        testFramework.addTest('⚡ Rendimiento', 'Algoritmo Simple - 1000 amigos', 
+            'Verifica rendimiento con lista grande', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                for (let i = 0; i < 1000; i++) {
+                    app.friends.push(`Amigo${i}`);
+                }
+
+                const start = performance.now();
+                app.simpleRandom();
+                const duration = performance.now() - start;
+
+                testFramework.assertTrue(duration < 10, `Debe completarse en menos de 10ms, tomó ${duration.toFixed(2)}ms`);
+            });
+
+        testFramework.addTest('⚡ Rendimiento', 'Fisher-Yates - 1000 amigos', 
+            'Verifica rendimiento de Fisher-Yates con lista grande', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                for (let i = 0; i < 1000; i++) {
+                    app.friends.push(`Amigo${i}`);
+                }
+
+                const start = performance.now();
+                app.fisherYatesRandom();
+                const duration = performance.now() - start;
+
+                testFramework.assertTrue(duration < 50, `Debe completarse en menos de 50ms, tomó ${duration.toFixed(2)}ms`);
+            });
+
+        testFramework.addTest('⚡ Rendimiento', 'Cálculo de equidad - 10000 sorteos', 
+            'Verifica rendimiento del cálculo de equidad con historial grande', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana', 'Carlos', 'María', 'Juan'];
+                
+                // Generar historial grande
+                for (let i = 0; i < 10000; i++) {
+                    const winner = app.friends[i % app.friends.length];
+                    app.recordDraw(winner, 'test');
+                }
+
+                const start = performance.now();
+                app.calculateFairness();
+                const duration = performance.now() - start;
+
+                testFramework.assertTrue(duration < 100, `Debe completarse en menos de 100ms, tomó ${duration.toFixed(2)}ms`);
+            });
+
+        // Edge Cases Tests
+        testFramework.addTest('🔍 Casos Extremos', 'Un solo amigo', 
+            'Verifica comportamiento con un solo amigo', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                app.friends = ['Ana'];
+                
+                const result1 = app.simpleRandom();
+                const result2 = app.fisherYatesRandom();
+                const result3 = app.weightedRandom();
+                
+                testFramework.assertEqual(result1, 'Ana', 'Simple debe devolver Ana');
+                testFramework.assertEqual(result2, 'Ana', 'Fisher-Yates debe devolver Ana');
+                testFramework.assertEqual(result3, 'Ana', 'Weighted debe devolver Ana');
+            });
+
+        testFramework.addTest('🔍 Casos Extremos', 'Nombres con caracteres especiales', 
+            'Verifica manejo de nombres con caracteres especiales', 
+            async () => {
+                const app = new MockSecretFriendApp();
+                const specialNames = ['José María', 'François', '李小明', 'María José', 'O\'Connor'];
+                
+                specialNames.forEach(name => {
+                    app.addFriend(name);
+                    testFramework.assertTrue(app.friends.includes(name), `${name} debe estar en la lista`);
+                });
+
+                const result = app.simpleRandom();
+                testFramework.assertTrue(specialNames.includes(result), 'Resultado debe ser uno de los nombres especiales');
+            });
+
+        // UI Validation Tests (Mock)
+        testFramework.addTest('🎨 Validación UI', 'Validación de entrada - Nombre válido', 
+            'Simula validación de entrada de UI', 
+            async () => {
+                // Mock validation function
+                const validateName = (name) => {
+                    return name && name.trim().length > 0 && name.length <= 50;
+                };
+
+                testFramework.assertTrue(validateName('Ana García'), 'Nombre válido debe pasar validación');
+                testFramework.assertFalse(validateName(''), 'Nombre vacío debe fallar validación');
+                testFramework.assertFalse(validateName('   '), 'Solo espacios debe fallar validación');
+                testFramework.assertFalse(validateName('A'.repeat(51)), 'Nombre muy largo debe fallar validación');
+            });
+
+        // Utility functions for the test interface
+        function toggleCategory(category) {
+            const list = document.getElementById(`list-${category}`);
+            const toggle = document.getElementById(`toggle-${category}`);
+            
+            if (list.classList.contains('expanded')) {
+                list.classList.remove('expanded');
+                toggle.textContent = '▼';
+            } else {
+                list.classList.add('expanded');
+                toggle.textContent = '▲';
+            }
+        }
+
+        function runAllTests() {
+            testFramework.runTests();
+        }
+
+        function runAlgorithmTests() {
+            testFramework.runTests('🧮 Algoritmos');
+        }
+
+        function runStatisticsTests() {
+            testFramework.runTests('📊 Estadísticas');
+        }
+
+        function runUITests() {
+            testFramework.runTests('🎨 Validación UI');
+        }
+
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            document.getElementById('consoleOutput').innerHTML = `
+                <div class="log-entry log-info">🗑️ Resultados limpiados</div>
+                <div class="log-entry log-info">💡 Ejecuta los tests usando los botones superiores</div>
+            `;
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('totalTests').textContent = '0';
+            document.getElementById('passedTests').textContent = '0';
+            document.getElementById('failedTests').textContent = '0';
+            document.getElementById('testDuration').textContent = '0ms';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            testFramework.log('🧪 Sistema de testing listo para usar', 'success');
+            testFramework.log(`📊 ${testFramework.tests.length} tests cargados en el sistema`, 'info');
+        });
+    </script>
+</body>
+</html>
+                

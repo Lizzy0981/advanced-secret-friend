@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#grad1)" filter="url(#shadow)"/>
+  
+  <!-- Target Rings -->
+  <circle cx="50" cy="50" r="35" fill="none" stroke="white" stroke-width="2" opacity="0.8"/>
+  <circle cx="50" cy="50" r="25" fill="none" stroke="white" stroke-width="2" opacity="0.6"/>
+  <circle cx="50" cy="50" r="15" fill="none" stroke="white" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Center Target -->
+  <circle cx="50" cy="50" r="8" fill="url(#grad2)"/>
+  <circle cx="50" cy="50" r="4" fill="white"/>
+  
+  <!-- Decorative Elements -->
+  <path d="M20 20 L25 25 M20 25 L25 20" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <path d="M75 20 L80 25 M75 25 L80 20" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <path d="M20 75 L25 80 M20 80 L25 75" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <path d="M75 75 L80 80 M75 80 L80 75" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  
+  <!-- Algorithm Indicator -->
+  <rect x="65" y="15" width="20" height="3" rx="1.5" fill="white" opacity="0.8"/>
+  <rect x="65" y="20" width="15" height="3" rx="1.5" fill="white" opacity="0.6"/>
+  <rect x="65" y="25" width="18" height="3" rx="1.5" fill="white" opacity="0.7"/>
+</svg>
