@@ -1884,3 +1884,131 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
     
     console.log('🛠️ Debug helpers available: debugApp(), addDemoData(), simulateDraws(), forceScroll()');
 }
+
+// 🚨 FUNCIÓN DE EMERGENCIA PARA FORZAR SCROLL
+function forceScrollEmergency() {
+    console.log('🚨 EMERGENCY SCROLL FIX ACTIVADO');
+    
+    // Reset total de estilos que pueden bloquear scroll
+    const elementsToFix = [
+        document.documentElement,
+        document.body,
+        document.querySelector('.hero'),
+        document.querySelector('.app-container'),
+        document.querySelector('.footer-personal')
+    ];
+    
+    elementsToFix.forEach(element => {
+        if (element) {
+            element.style.setProperty('overflow', 'visible', 'important');
+            element.style.setProperty('overflow-y', 'auto', 'important');
+            element.style.setProperty('overflow-x', 'hidden', 'important');
+            element.style.setProperty('height', 'auto', 'important');
+            element.style.setProperty('min-height', '100vh', 'important');
+            element.style.setProperty('position', 'static', 'important');
+            element.style.setProperty('display', 'block', 'important');
+        }
+    });
+    
+    // Forzar html y body específicamente
+    document.documentElement.style.cssText = `
+        overflow: auto !important;
+        overflow-y: scroll !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100% !important;
+        position: static !important;
+    `;
+    
+    document.body.style.cssText = `
+        overflow: auto !important;
+        overflow-y: scroll !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        position: static !important;
+        display: block !important;
+        -webkit-overflow-scrolling: touch !important;
+        font-family: var(--font-primary);
+        font-size: var(--font-base);
+        line-height: 1.6;
+        color: var(--text-primary);
+        background-color: var(--background-light);
+    `;
+    
+    // Eliminar cualquier clase o estilo que bloquee scroll
+    const problematicElements = document.querySelectorAll('*');
+    problematicElements.forEach(el => {
+        const computedStyle = window.getComputedStyle(el);
+        if (computedStyle.overflow === 'hidden' && el !== document.body && el !== document.documentElement) {
+            console.warn('🔧 Fixing element with overflow:hidden:', el);
+            el.style.setProperty('overflow', 'visible', 'important');
+        }
+    });
+    
+    // Test scroll después del fix
+    setTimeout(() => {
+        const scrollHeight = document.body.scrollHeight;
+        const windowHeight = window.innerHeight;
+        const canScroll = scrollHeight > windowHeight;
+        
+        if (canScroll) {
+            console.log('✅ SCROLL FUNCIONANDO - Altura del body:', scrollHeight, 'Altura ventana:', windowHeight);
+            // Hacer un test scroll
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1000);
+        } else {
+            console.log('⚠️ Contenido no es suficientemente largo para hacer scroll');
+        }
+    }, 500);
+}
+
+// Ejecutar fix de emergencia inmediatamente
+forceScrollEmergency();
+
+// Ejecutar fix cada vez que se modifique el DOM
+const observer = new MutationObserver(() => {
+    forceScrollEmergency();
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+});
+
+// Ejecutar fix en eventos críticos
+window.addEventListener('load', forceScrollEmergency);
+window.addEventListener('resize', forceScrollEmergency);
+document.addEventListener('DOMContentLoaded', forceScrollEmergency);
+
+// Fix cada 2 segundos como respaldo
+setInterval(forceScrollEmergency, 2000);
+
+// ===== DEBUG HELPERS =====
+window.debugScroll = () => {
+    console.log('🔍 SCROLL DEBUG INFO:');
+    console.log('Body scrollHeight:', document.body.scrollHeight);
+    console.log('Window innerHeight:', window.innerHeight);
+    console.log('Document scrollHeight:', document.documentElement.scrollHeight);
+    console.log('Current scrollY:', window.scrollY);
+    console.log('Body overflow:', window.getComputedStyle(document.body).overflow);
+    console.log('Html overflow:', window.getComputedStyle(document.documentElement).overflow);
+    
+    const canScroll = document.body.scrollHeight > window.innerHeight;
+    console.log('Can scroll?', canScroll);
+    
+    if (!canScroll) {
+        console.log('🚨 PROBLEMA: El contenido no es lo suficientemente alto');
+        // Agregar altura temporal para test
+        document.body.style.minHeight = '200vh';
+        console.log('✅ Altura temporal agregada para test');
+    }
+};
+
+window.forceScroll = forceScrollEmergency;
+
+console.log('🛠️ Emergency scroll fix loaded. Use debugScroll() for diagnosis');
