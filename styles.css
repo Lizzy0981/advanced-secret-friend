@@ -5,6 +5,65 @@
  * Last Updated: 2025
  */
 
+/* 🚨 RESET TOTAL DE SCROLL - MÁXIMA PRIORIDAD */
+* {
+    overflow: visible !important;
+}
+
+html {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: scroll !important;
+    height: auto !important;
+    min-height: 100% !important;
+    scroll-behavior: smooth !important;
+    position: static !important;
+}
+
+body {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: scroll !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: static !important;
+    display: block !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Forzar todos los containers principales */
+.hero,
+.app-container,
+.footer-personal {
+    overflow: visible !important;
+    position: static !important;
+    height: auto !important;
+}
+
+/* Asegurar que ningún elemento bloquee el scroll */
+.navbar {
+    position: fixed !important;
+    overflow: visible !important;
+}
+
+.card {
+    overflow: visible !important;
+    position: static !important;
+}
+
+/* Fix específico para elementos que pueden causar problemas */
+.result-container,
+.chart-container,
+.friends-list,
+.history-list {
+    overflow: visible !important;
+}
+
+.friends-list,
+.history-list {
+    overflow-y: auto !important; /* Solo estos necesitan scroll interno */
+}
+
 /* ===== CSS CUSTOM PROPERTIES (VARIABLES) ===== */
 :root {
     /* Color Palette - Modern Blue-Purple Theme */
