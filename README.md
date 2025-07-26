@@ -12,6 +12,9 @@ Una aplicación web profesional de sorteo de amigo secreto con análisis estadí
 
 *Dashboard de analytics con gráficos interactivos y métricas de equidad estadística.*
 
+![Imagen - Muestra de Funcionamiento]![Captura de pantalla_25-7-2025_201344_lizzy0981 github io](https://github.com/user-attachments/assets/39fd4d66-14a3-42bb-a6a7-bd33bca36662)
+
+
 ## ✨ Características
 
 - 🧮 **4 Algoritmos de sorteo** con base científica y matemática rigurosa
