@@ -740,7 +740,7 @@ class SecretFriendApp {
     // ===== CHARTS & VISUALIZATION =====
     initCharts() {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const textColor = isDark ? '#ffffff' : '#1a1a1a';
+        const textColor = isDark ? '#ffffff' : '#404040';
         const gridColor = isDark ? '#404040' : '#e2e8f0';
 
         // Distribution Chart
